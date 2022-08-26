@@ -1,0 +1,5 @@
+Dependencies for Project 'LED_register', Target 'Target 1': (DO NOT MODIFY !)
+F (.\main.c)(0x62223B73)(-c --cpu Cortex-M3 -g -O0 --apcs=interwork --split_sections-I E:\STM32\Projects\0.2_LED_Register\RTE-I C:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\1.1.0\Device\Include-I C:\Keil_v5\ARM\CMSIS\Include-D__UVISION_VERSION="515" -DSTM32F10X_MD-o .\objects\main.o --omf_browse .\objects\main.crf --depend .\objects\main.d)
+I (stm32f10x.h)(0x5EEA0FE3)
+F (.\stm32f10x.h)(0x5EEA0FE3)()
+F (..\1-LED_light_up\Libraries\CMSIS\startup\startup_stm32f10x_md.s)(0x4D783CD2)(--cpu Cortex-M3 -g --apcs=interwork -I E:\STM32\Projects\0.2_LED_Register\RTE-I C:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\1.1.0\Device\Include-I C:\Keil_v5\ARM\CMSIS\Include--pd "__UVISION_VERSION SETA 515" --pd "STM32F10X_MD SETA 1"--list .\listings\startup_stm32f10x_md.lst --xref -o .\objects\startup_stm32f10x_md.o --depend .\objects\startup_stm32f10x_md.d)
