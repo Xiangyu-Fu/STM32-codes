@@ -469,7 +469,7 @@ typedef enum IRQn
   CAN2_SCE_IRQn               = 66,     /*!< CAN2 SCE Interrupt                                   */
   OTG_FS_IRQn                 = 67      /*!< USB OTG FS global Interrupt                          */
 #endif /* STM32F10X_CL */     
-} IRQn_Type;
+}IRQn_Type;
 
 /**
   * @}

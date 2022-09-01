@@ -15,23 +15,11 @@ int main()
 	//LED_GPIO_Config(LED_B_GPIO_PIN);
 	
 	// GPIO CONFIGURATION
-	KEY1_GPIO_Config();
-	KEY2_GPIO_Config();
+	// KEY1_GPIO_Config();
+	// KEY2_GPIO_Config();
 	
 	//MAIN LOOP
-	while (1)
-	{
-		if(Key_Scan(KEY1_GPIO_PORT, KEY1_GPIO_PIN)==KEY_ON)
-		{
-			LED_G_TOGGLE;
-		}
-		if(Key_Scan(KEY2_GPIO_PORT, KEY2_GPIO_PIN)==KEY_ON)
-		{
-			LED_R_TOGGLE;
-		}
-	}
-	
-#if 0
+#if 1
 	while(1)
 	{
 		//GPIO_SetBits(LED_G_GPIO_PORT, LED_G_GPIO_PIN);
