@@ -32,3 +32,4 @@
 .\objects\main.o: ..\User\KEY\bsp_key.h
 .\objects\main.o: ..\User\USART\bsp_usart.h
 .\objects\main.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h
+.\objects\main.o: ..\User\LED\bsp_color_led.h

@@ -30,8 +30,7 @@
 ".\objects\bsp_led.o"
 ".\objects\bsp_key.o"
 ".\objects\bsp_usart.o"
-".\objects\bsp_color_led.o"
---library_type=microlib --strict --scatter ".\Objects\USART.sct"
+--library_type=microlib --strict --scatter ".\Objects\COLORLED.sct"
 --summary_stderr --info summarysizes --map --load_addr_map_info --xref --callgraph --symbols
 --info sizes --info totals --info unused --info veneers
---list ".\Listings\USART.map" -o .\Objects\USART.axf
+--list ".\Listings\COLORLED.map" -o .\Objects\COLORLED.axf

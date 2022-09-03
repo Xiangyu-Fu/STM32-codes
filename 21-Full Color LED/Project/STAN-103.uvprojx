@@ -554,6 +554,11 @@
               <FileType>1</FileType>
               <FilePath>..\User\USART\bsp_usart.c</FilePath>
             </File>
+            <File>
+              <FileName>bsp_color_led.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\User\LED\bsp_color_led.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
