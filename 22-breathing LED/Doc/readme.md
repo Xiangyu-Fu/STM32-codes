@@ -7,3 +7,6 @@
     TIM_OC1Init(ADVANCE_TIM, &TIM_OCInitStructure);
     TIM_OC1PreloadConfig(ADVANCE_TIM, TIM_OCPreload_Enable);
 ```
+
+
+定时器复用
