@@ -1,35 +1,93 @@
 #include "bsp_breathing.h"
 
-static void ADVANCE_TIM_Mode_Config(void)
-{
-    ADVANCE_TIM_APBxClock_FUN(ADVANCE_TIM_CLK, ENABLE);
+/* breif:  LED GPIO Configuration
+ * param:  none
+ * return: none
+ */
 
-    /* time base configuration */
-    TIM_TimeBaseInitTypeDef TIM_TimeBaseStructure;
-    TIM_TimeBaseStructure.TIM_Period = ADVANCED_TIM_PERIOD;
-    TIM_TimeBaseStructure.TIM_Prescaler = ADVANCED_TIM_PSC;
+static void TIMx_GPIO_Config(void)
+{
+    GPIO_InitTypeDef GPIO_InitStructure;
+    
+    // enable the clock of GPIOA
+    RCC_APB2PeriphClockCmd(BRE_TIM_GPIO_CLK, ENABLE); 
+		BRE_TIM_GPIO_APBxClock_FUN  ( BRE_TIM_GPIO_CLK, ENABLE );
+    
+    // IO configuration, because the pin of the red using the second function of the pinout
+    // so we define the remap function 
+    BRE_GPIO_REMAP_FUN();
+
+    // configure the pinout of the LED
+    GPIO_InitStructure.GPIO_Pin = BRE_TIM_LED_PIN;
+    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF_PP;// we configure the pin as the alternate function
+    GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+    GPIO_Init(BRE_TIM_LED_PORT, &GPIO_InitStructure);
+}
+
+// LED light level table
+uint16_t indexWave[] = {
+    1, 1, 1, 1, 2, 2, 2, 2, 3, 3, 4, 4, 5, 5,
+    6, 7, 8, 9, 10, 11, 13, 15, 17, 19, 22,
+    25, 28, 32, 36, 41, 47, 53, 61, 69, 79,
+    89, 102, 116, 131, 149, 170, 193, 219,
+    250, 284, 323, 367, 417, 474, 539, 613,
+    697, 792, 901, 1024, 1024, 901, 792, 697,
+    613, 539, 474, 417, 367, 323, 284, 250,
+    219, 193, 170, 149, 131, 116, 102, 89,
+    79, 69, 61, 53, 47, 41, 36, 32, 28, 25,
+    22, 19, 17, 15, 13, 11, 10, 9, 8, 7, 6,
+    5, 5, 4, 4, 3, 3, 2, 2, 2, 2, 1, 1, 1, 1
+};
+
+// calculate how many elements in the PWM table
+uint16_t POINT_NUM = sizeof(indexWave) / sizeof(indexWave[0]);
+
+static void NVIC_Config_PWM(void)
+{
+    NVIC_InitTypeDef NVIC_InitStructure;
+    
+    // configure the preemption priority of the timer
+    NVIC_PriorityGroupConfig(NVIC_PriorityGroup_1);
+
+    // enable the timer interrupt
+    NVIC_InitStructure.NVIC_IRQChannel = BRE_TIMx_IRQn;
+    NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0;
+    NVIC_InitStructure.NVIC_IRQChannelSubPriority = 2;
+    NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
+    NVIC_Init(&NVIC_InitStructure);
+}
+
+static void TIMx_Mode_Config(void)
+{
+    TIM_TimeBaseInitTypeDef   TIM_TimeBaseStructure;
+    TIM_OCInitTypeDef TIM_OCInitStructure;
+
+    // enable the clock of timer
+    BRE_TIM_GPIO_APBxClock_FUN(BRE_TIMx_CLK, ENABLE);
+
+    TIM_TimeBaseStructure.TIM_Period = (1024 - 1);
+    TIM_TimeBaseStructure.TIM_Prescaler = (200 - 1);
     TIM_TimeBaseStructure.TIM_ClockDivision = TIM_CKD_DIV1;
     TIM_TimeBaseStructure.TIM_CounterMode = TIM_CounterMode_Up;
-    TIM_TimeBaseStructure.TIM_RepetitionCounter = 0;
-    TIM_TimeBaseInit(ADVANCE_TIMx, &TIM_TimeBaseStructure);
+    TIM_TimeBaseInit(BRE_TIMx, &TIM_TimeBaseStructure);
 
-    /* output compare configuration */
-    TIM_OCInitTypeDef TIM_OCInitStructure;
-    // configure the PWM mode to pwm1
-    TIM_OCInitStructure.TIM_OCMode = TIM_OCMode_PWM1;  
-    // enable the output
+    // configure the PWM mode
+    TIM_OCInitStructure.TIM_OCMode = TIM_OCMode_PWM1;
     TIM_OCInitStructure.TIM_OutputState = TIM_OutputState_Enable;
-    // enable the compare output
-    TIM_OCInitStructure.TIM_OutputNState = TIM_OutputNState_Enable;
-    // 
     TIM_OCInitStructure.TIM_Pulse = 0;
-    TIM_OCInitStructure.TIM_OCPolarity = TIM_OCPolarity_High;
-    TIM_OCInitStructure.TIM_OCNPolarity = TIM_OCNPolarity_High;
-    TIM_OCInitStructure.TIM_OCIdleState = TIM_OCIdleState_Reset;
-    TIM_OCInitStructure.TIM_OCNIdleState = TIM_OCNIdleState_Reset;
+    TIM_OCInitStructure.TIM_OCPolarity = TIM_OCPolarity_Low;
 
-    TIM_OC1Init(ADVANCE_TIMx, &TIM_OCInitStructure);
-    TIM_OC1PreloadConfig(ADVANCE_TIMx, TIM_OCPreload_Enable);
-    
+    BRE_TIM_OCxInit(BRE_TIMx, &TIM_OCInitStructure);
+    BRE_TIM_OCxPreloadConfig(BRE_TIMx, TIM_OCPreload_Enable);
 
+    // enable the timer
+    TIM_Cmd(BRE_TIMx, ENABLE);
+    TIM_ITConfig(BRE_TIMx, TIM_IT_Update, ENABLE);
+    NVIC_Config_PWM();
+}
+
+void TIMx_Breathing_Init(void)
+{
+    TIMx_GPIO_Config();
+    TIMx_Mode_Config();
 }

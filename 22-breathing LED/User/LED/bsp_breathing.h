@@ -34,11 +34,12 @@
 #define BRE_TIM_GPIO_CLK           (RCC_APB2Periph_GPIOB)
 
 // the pin of the green light
+#define   BRE_GPIO_REMAP_FUN()
 #define BRE_TIM_LED_PIN             GPIO_Pin_0
 #define BRE_TIM_LED_PORT            GPIOB
 #define BRE_TIM_OCxInit             TIM_OC3Init // the channel of the green light. 1~4
 #define BRE_TIM_OCxPreloadConfig    TIM_OC3PreloadConfig
-#define BRE_CCRx                    DMA_CCR3_CIRC
+#define BRE_CCRx                    CCR3
 
 #define BRE_TIMx_IRQn               TIM3_IRQn            // the interrupt of the timer
 #define BRE_TIMx_IRQHandler         TIM3_IRQHandler
@@ -49,6 +50,7 @@
 #define BRE_TIM_GPIO_APBxClock_FUN  RCC_APB2PeriphClockCmd
 #define BRE_TIM_GPIO_CLK           (RCC_APB2Periph_GPIOB)
 
+#difine BRE_GPIO_REMAP_FUN()
 #define BRE_TIM_LED_PIN             GPIO_Pin_1
 #define BRE_TIM_LED_PORT            GPIOB
 #define BRE_TIM_OCxInit             TIM_OC4Init // the channel of the blue light. 1~4
@@ -59,5 +61,7 @@
 #define BRE_TIMx_IRQHandler         TIM3_IRQHandler
 
 #endif
+
+void TIMx_Breathing_Init(void);
 
 #endif

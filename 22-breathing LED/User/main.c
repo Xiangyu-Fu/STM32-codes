@@ -4,6 +4,7 @@
 #include "bsp_usart.h"
 #include "stdio.h"
 #include "bsp_color_led.h"
+#include "bsp_breathing.h"
 
 void delay(uint32_t count)
 {
@@ -16,21 +17,11 @@ int main()
 	// initialise the mode of USART as 115200 8-N-1
 	USART_Config();
 
-	// initialise the TIM gpio
-	COLOR_TIMx_LED_init();
+	/* 初始化呼吸灯 */
+	TIMx_Breathing_Init();
 
-
-	while (1)
+	while (1) 
 	{
-		SetRGBColor(0x8080ff);
-		delay(0xFFFFF);
 
-		SetRGBColor(0x80ff80);
-		delay(0xFFFFF);
-
-		SetRGBColor(0xff8080);
-		delay(0xFFFFF);
 	}
-	
-	 
 }

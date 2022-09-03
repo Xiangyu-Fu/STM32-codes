@@ -559,6 +559,11 @@
               <FileType>1</FileType>
               <FilePath>..\User\LED\bsp_color_led.c</FilePath>
             </File>
+            <File>
+              <FileName>bsp_breathing.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\User\LED\bsp_breathing.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
