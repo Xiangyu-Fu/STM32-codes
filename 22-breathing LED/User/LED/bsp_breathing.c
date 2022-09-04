@@ -11,7 +11,7 @@ static void TIMx_GPIO_Config(void)
     
     // enable the clock of GPIOA
     RCC_APB2PeriphClockCmd(BRE_TIM_GPIO_CLK, ENABLE); 
-		BRE_TIM_GPIO_APBxClock_FUN  ( BRE_TIM_GPIO_CLK, ENABLE );
+		BRE_TIM_GPIO_APBxClock_FUN ( BRE_TIM_GPIO_CLK, ENABLE );
     
     // IO configuration, because the pin of the red using the second function of the pinout
     // so we define the remap function 
@@ -23,6 +23,7 @@ static void TIMx_GPIO_Config(void)
     GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
     GPIO_Init(BRE_TIM_LED_PORT, &GPIO_InitStructure);
 }
+
 
 // LED light level table
 uint16_t indexWave[] = {
@@ -38,6 +39,8 @@ uint16_t indexWave[] = {
     22, 19, 17, 15, 13, 11, 10, 9, 8, 7, 6,
     5, 5, 4, 4, 3, 3, 2, 2, 2, 2, 1, 1, 1, 1
 };
+
+__IO uint16_t period_class = 10;
 
 // calculate how many elements in the PWM table
 uint16_t POINT_NUM = sizeof(indexWave) / sizeof(indexWave[0]);
@@ -63,7 +66,7 @@ static void TIMx_Mode_Config(void)
     TIM_OCInitTypeDef TIM_OCInitStructure;
 
     // enable the clock of timer
-    BRE_TIM_GPIO_APBxClock_FUN(BRE_TIMx_CLK, ENABLE);
+    BRE_TIM_APBxClock_FUN(BRE_TIMx_CLK, ENABLE);
 
     TIM_TimeBaseStructure.TIM_Period = (1024 - 1);
     TIM_TimeBaseStructure.TIM_Prescaler = (200 - 1);
@@ -79,6 +82,7 @@ static void TIMx_Mode_Config(void)
 
     BRE_TIM_OCxInit(BRE_TIMx, &TIM_OCInitStructure);
     BRE_TIM_OCxPreloadConfig(BRE_TIMx, TIM_OCPreload_Enable);
+		TIM_ARRPreloadConfig(BRE_TIMx, ENABLE); // Enable the ARR reload register
 
     // enable the timer
     TIM_Cmd(BRE_TIMx, ENABLE);

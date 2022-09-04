@@ -19,7 +19,6 @@ int main()
 
 	/* 初始化呼吸灯 */
 	TIMx_Breathing_Init();
-
 	while (1) 
 	{
 

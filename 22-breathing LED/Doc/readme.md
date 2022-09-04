@@ -8,5 +8,7 @@
     TIM_OC1PreloadConfig(ADVANCE_TIM, TIM_OCPreload_Enable);
 ```
 
+TIM 重载寄存器ARR --> Review the TIM
 
-定时器复用
+## DEBUG
+From last night, I stuck in a bug that I found that I cannot open the breathing led, even I checked all of the code but I couldn't find anything. But compared with the example code, I found that the clock of TIM was not open. I use the same clock function on the two periperals. So,  next time, please notice that you must open the clock for all peripheral correctly.
