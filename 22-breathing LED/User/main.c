@@ -6,6 +6,8 @@
 #include "bsp_color_led.h"
 #include "bsp_breathing.h"
 
+__IO uint32_t rgb_color = 0xFFFFFF;
+
 void delay(uint32_t count)
 {
 	for(;count!=0;count--);
@@ -21,6 +23,11 @@ int main()
 	TIMx_Breathing_Init();
 	while (1) 
 	{
-
+		rgb_color= 0xFF00FF;
+		delay(0x0FFFFFF);
+		rgb_color= 0x00FFFF;
+		delay(0x0FFFFFF);
+		rgb_color= 0xFFFF00;
+		delay(0x0FFFFFF);
 	}
 }

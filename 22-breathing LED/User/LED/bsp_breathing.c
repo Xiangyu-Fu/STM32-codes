@@ -4,28 +4,35 @@
  * param:  none
  * return: none
  */
+ 
 
 static void TIMx_GPIO_Config(void)
 {
     GPIO_InitTypeDef GPIO_InitStructure;
     
-    // enable the clock of GPIOA
+    // enable the clock of GPIO
     RCC_APB2PeriphClockCmd(BRE_TIM_GPIO_CLK, ENABLE); 
-		BRE_TIM_GPIO_APBxClock_FUN ( BRE_TIM_GPIO_CLK, ENABLE );
     
     // IO configuration, because the pin of the red using the second function of the pinout
     // so we define the remap function 
     BRE_GPIO_REMAP_FUN();
 
     // configure the pinout of the LED
-    GPIO_InitStructure.GPIO_Pin = BRE_TIM_LED_PIN;
+    GPIO_InitStructure.GPIO_Pin = BRE_RED_TIM_LED_PIN;
     GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF_PP;// we configure the pin as the alternate function
     GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
-    GPIO_Init(BRE_TIM_LED_PORT, &GPIO_InitStructure);
+    GPIO_Init(BRE_RED_TIM_LED_PORT, &GPIO_InitStructure);
+
+    // green light
+    GPIO_InitStructure.GPIO_Pin = BRE_GREEN_TIM_LED_PIN;
+    GPIO_Init(BRE_GREEN_TIM_LED_PORT, &GPIO_InitStructure);
+
+    // blue light
+    GPIO_InitStructure.GPIO_Pin = BRE_BLUE_TIM_LED_PIN;
+    GPIO_Init(BRE_BLUE_TIM_LED_PORT, &GPIO_InitStructure);
 }
 
 
-// LED light level table
 uint16_t indexWave[] = {
     1, 1, 1, 1, 2, 2, 2, 2, 3, 3, 4, 4, 5, 5,
     6, 7, 8, 9, 10, 11, 13, 15, 17, 19, 22,
@@ -40,7 +47,10 @@ uint16_t indexWave[] = {
     5, 5, 4, 4, 3, 3, 2, 2, 2, 2, 1, 1, 1, 1
 };
 
-__IO uint16_t period_class = 10;
+
+
+
+__IO uint16_t period_class = 1;
 
 // calculate how many elements in the PWM table
 uint16_t POINT_NUM = sizeof(indexWave) / sizeof(indexWave[0]);
@@ -68,8 +78,8 @@ static void TIMx_Mode_Config(void)
     // enable the clock of timer
     BRE_TIM_APBxClock_FUN(BRE_TIMx_CLK, ENABLE);
 
-    TIM_TimeBaseStructure.TIM_Period = (1024 - 1);
-    TIM_TimeBaseStructure.TIM_Prescaler = (200 - 1);
+    TIM_TimeBaseStructure.TIM_Period = (512 - 1);
+    TIM_TimeBaseStructure.TIM_Prescaler = (72 - 1);
     TIM_TimeBaseStructure.TIM_ClockDivision = TIM_CKD_DIV1;
     TIM_TimeBaseStructure.TIM_CounterMode = TIM_CounterMode_Up;
     TIM_TimeBaseInit(BRE_TIMx, &TIM_TimeBaseStructure);
@@ -80,8 +90,16 @@ static void TIMx_Mode_Config(void)
     TIM_OCInitStructure.TIM_Pulse = 0;
     TIM_OCInitStructure.TIM_OCPolarity = TIM_OCPolarity_Low;
 
-    BRE_TIM_OCxInit(BRE_TIMx, &TIM_OCInitStructure);
-    BRE_TIM_OCxPreloadConfig(BRE_TIMx, TIM_OCPreload_Enable);
+    // RGB CHANNELS
+    BRE_RED_TIM_OCxInit(BRE_TIMx, &TIM_OCInitStructure);
+    BRE_RED_TIM_OCxPreloadConfig(BRE_TIMx, TIM_OCPreload_Enable);
+
+    BRE_GREEN_TIM_OCxInit(BRE_TIMx, &TIM_OCInitStructure);
+    BRE_GREEN_TIM_OCxPreloadConfig(BRE_TIMx, TIM_OCPreload_Enable);
+
+    BRE_BLUE_TIM_OCxInit(BRE_TIMx, &TIM_OCInitStructure);
+    BRE_BLUE_TIM_OCxPreloadConfig(BRE_TIMx, TIM_OCPreload_Enable);
+
 		TIM_ARRPreloadConfig(BRE_TIMx, ENABLE); // Enable the ARR reload register
 
     // enable the timer

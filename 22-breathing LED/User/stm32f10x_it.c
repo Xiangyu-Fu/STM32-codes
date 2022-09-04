@@ -172,40 +172,65 @@ void SysTick_Handler(void)
   * @}
   */ 
 
-
 extern uint16_t indexWave[];
+extern __IO uint32_t rgb_color;
 
-void TIM3_IRQHandler(void)
+void BRE_TIMx_IRQHandler(void)
 {	
 	printf("IRQ test");
-	static uint16_t pwm_index = 0;		
-	static uint16_t period_cnt = 0;		
-	
-	if (TIM_GetITStatus(BRE_TIMx, TIM_IT_Update) != RESET)	//TIM_IT_Update
- 	{			
-			period_cnt++;
-			
-			BRE_TIMx->BRE_CCRx = indexWave[pwm_index];	
+	static uint16_t pwm_index = 0;	 // pwm index	
+	static uint16_t period_cnt = 0;		 // period counter
+	static uint16_t amplitude_cnt = 0; // amplitude counter, 0~255
 
-			if(period_cnt > period_class)				 				
-			{				
+  if (TIM_GetITStatus(TIM3, TIM_IT_Update) != RESET) // 1ms, update interrupt
+  {
+    // amplitude counter increase
+    amplitude_cnt++;
+  
+    // 亮度等级-> RGB 颜色
+    if (amplitude_cnt > (AMPLITUDE_CLASS - 1)) // BRIGHTNESS LEVEL 
+    {
+      // each element in indexWave[] has APLITUDE_CLASS levels, which indicates the numbers of the usage count
+      period_cnt++;
+      if (period_cnt >= period_class )
+      {
+        pwm_index++; // the pointer of the wave table point to the next point
 
-				pwm_index++;										
-				
+        if (pwm_index >= POINT_NUM)
+        {
+          pwm_index = 0;
+        }
+        period_cnt = 0;
+      }
 
-				if( pwm_index >=  POINT_NUM)			
-				{
-					pwm_index=0;								
-				}
-				
-				period_cnt=0;											
-			}	
-			else
-			{
-			}	
-		
-		TIM_ClearITPendingBit (BRE_TIMx, TIM_IT_Update);
-	}
+      amplitude_cnt = 0; // reset the amplitude counter
+    }else{ // RGB COLOR
+      // RED
+      if (((rgb_color&0xff0000) >> 16) >= amplitude_cnt)
+      {
+        BRE_TIMx->BRE_RED_CCRx = indexWave[pwm_index];
+      }else{
+        BRE_TIMx->BRE_RED_CCRx = 0;
+      }
+      
+      // GREEN
+      if (((rgb_color&0x00ff00) >> 8) >= amplitude_cnt)
+      {
+        BRE_TIMx->BRE_GREEN_CCRx = indexWave[pwm_index];
+      }else{
+        BRE_TIMx->BRE_GREEN_CCRx = 0;
+      }
+
+      // BLUE
+      if ((rgb_color&0x0000ff) >= amplitude_cnt)
+      {
+        BRE_TIMx->BRE_BLUE_CCRx = indexWave[pwm_index];
+      }else{
+        BRE_TIMx->BRE_BLUE_CCRx = 0;
+        }
+      }
+    TIM_ClearITPendingBit(TIM3, TIM_IT_Update); // clear the interrupt flag
+  }
 }
 
 
